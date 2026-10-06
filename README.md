@@ -64,3 +64,14 @@ Canvas DPR 會依 iPad 畫面像素數動態限制，避免 Retina 高解析度�
 - P6: `P6_Q1.jpeg` / `P6_Q2.jpeg` / `P6_Q3.jpeg`
 
 選定後可連續抽題，不會每次重新詢問題組。底部的題組按鈕可隨時切換；切換時會清空該輪 Q1-Q3 的抽取紀錄。
+
+
+## Direct pack URLs
+When deployed to GitHub Pages, these routes skip the pack picker and open the selected pack directly:
+
+- `.../p3/`
+- `.../p4/`
+- `.../p5/`
+- `.../p6/`
+
+Fallback forms also work: `?pack=p4`, `?p=p4`, and `#p4`.
