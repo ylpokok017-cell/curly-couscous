@@ -1,77 +1,28 @@
-# 幸運抽題樂園 — iPad Lucky Draw
+# Lucky Draw v10.3 — Kinetic Arena
 
-一個為 iPad 課堂使用設計的單頁 Lucky Draw Web App。
+Lottery Drum has been removed and replaced by Kinetic Arena: three fixed Q candidates remain visible while one neutral ceramic puck is launched once, ricochets through fixed bumpers, and is captured by one goal. The selected Q identity appears on the puck only after capture. Recent-three scene exclusion and Q1/Q2/Q3 rolling non-repeat rules remain unchanged.
 
-## 功能
-- Q1 / Q2 / Q3 題目圖片隨機抽取
-- 20 種 Canvas 幾何運算抽獎場景
-- 最近 3 次抽獎場景不會重複
-- 可選「本輪不重複」：Q1、Q2、Q3 各抽一次後才重新開始
-- iPad 橫向 / 直向自動適配、safe-area 與 visualViewport 支援
-- 音效、彩紙、全螢幕、快速抽與重設
+# Lucky Draw v10.2 — Neutral Selectors
 
-## 動畫設計原則
-所有 20 個場景均依同一套敘事節奏重新設計：
+An iPad classroom lucky-draw app where Q1, Q2 and Q3 stay visible and a visible mechanism chooses one.
 
-1. **建立情境**：先讓學生看懂這次是什麼玩法。
-2. **混合 / 競賽**：Q1–Q3 真正參與洗牌、旋轉、競速、下落或交換。
-3. **減速鎖定**：動作逐步收斂，不突然跳答案。
-4. **清楚揭曉**：真正中獎的 Q 會完成該場景的「勝利動作」，並停留後才打開題目圖片。
+## Six selectors
+- Lucky Wheel — rotating candidates + fixed graphite/metal pointer
+- Plinko — neutral ceramic marble + gravity/collisions
+- Lottery Drum — three visible candidate balls; a fixed intake captures one
+- Magnetic Rail — titanium/ceramic selector puck settles into one of three detents
+- Timing Gate — neutral mechanical timer triggers a fixed gate
+- Roulette Bowl — pearl-white ball loses energy and settles into one of three pockets
 
-不同玩法使用不同節奏與音效頻率，不再把全部場景硬套同一個動畫時長。
+## Material rule
+Moving selector objects are neutral: ceramic white, pearl white, graphite, or metal. Candidate colors identify Q1/Q2/Q3. The selected question color only enters the selector/halo after the result is physically established. There is no global “yellow means random” token.
 
-## 20 種場景
-1. 超級洗牌 — 卡片環繞洗牌，勝出卡移到中央並放大。
-2. 幸運大轉盤 — 三等份轉盤高速旋轉並精準停到真正答案。
-3. 扭蛋機 — 扭蛋在球艙內混合，勝出扭蛋從出口掉下。
-4. 寶箱大冒險 — 寶箱震動、開蓋、粒子爆發，答案從箱內升起。
-5. 三格老虎機 — 三個輪軸依序減速，最後全部停在真正答案。
-6. 火箭升空 — 三支火箭競速，勝出火箭最後超車衝過終點。
-7. 魔法傳送門 — 三個答案繞門旋轉，勝出答案被吸入後重新出現在中央。
-8. 氣球派對 — 三顆氣球升空比賽，勝出氣球飛到最高處。
-9. 禮物盒大爆開 — 禮物盒交換位置，勝出盒移到中央並打開。
-10. 幸運骰子 — 三顆骰子翻滾彈跳，勝出骰子落到中央並放大。
-11. 宇宙行星抽題 — 三個答案沿不同軌道運行，勝出星球脫離軌道到焦點位置。
-12. 魔術帽 — 帽子移動混淆，最後抬起勝出帽並揭曉答案。
-13. 猜杯遊戲 — 三個同色杯子交換位置，最後抬起正確杯子。
-14. UFO 光束 — UFO 左右掃描，鎖定後用光束吸起真正答案。
-15. 夾公仔機 — 夾爪橫移、下降、閉合並把真正答案夾起。
-16. 彈珠瀑布 — 彈珠經過釘陣左右跳動，最後真正掉入正確 Q 槽。
-17. 幸運賽車 — 三台車競速，勝出車在最後階段超車衝線。
-18. 魔法故事書 — 書頁快速翻過 Q1–Q3，最後停在真正答案頁。
-19. 火山大爆發 — 火山粒子拋物線噴發，真正答案像寶石般被噴到舞台焦點。
-20. 海底追追追 — 三條魚游動追逐，勝出魚最後游進中央寶藏圈。
+## Hard logic rule
+No candidate may be teleported, secretly replaced, or steered to the answer without a visible mechanism that explains why it was selected.
 
-## 動畫引擎
-使用 `requestAnimationFrame + Canvas` 即時計算位置、角度、縮放、軌跡與粒子。主流程等待動畫引擎 Promise 回報完成，不使用 `setTimeout` 猜動畫是否結束，以降低 iPad Safari 掉幀造成的不同步。
+## Selection rules
+- The next animation cannot be any of the previous three animations.
+- Any three consecutive question draws contain Q1, Q2 and Q3 exactly once.
 
-Canvas DPR 會依 iPad 畫面像素數動態限制，避免 Retina 高解析度下過度消耗 GPU。
-
-## 部署
-### GitHub Pages
-直接把此資料夾內容推到 Repository，啟用 GitHub Pages 即可。
-
-### Cloudflare Workers Static Assets
-專案附有 `wrangler.jsonc`，可依 Cloudflare Wrangler 的靜態資產方式部署。
-
-## 題組選擇
-
-啟動後先選擇 P3 / P4 / P5 / P6。每個題組各有 Q1、Q2、Q3 三張圖片：
-
-- P3: `P3_Q1.jpeg` / `P3_Q2.jpeg` / `P3_Q3.jpeg`
-- P4: `P4_Q1.jpeg` / `P4_Q2.jpeg` / `P4_Q3.jpeg`
-- P5: `P5_Q1.jpeg` / `P5_Q2.jpeg` / `P5_Q3.jpeg`
-- P6: `P6_Q1.jpeg` / `P6_Q2.jpeg` / `P6_Q3.jpeg`
-
-選定後可連續抽題，不會每次重新詢問題組。底部的題組按鈕可隨時切換；切換時會清空該輪 Q1-Q3 的抽取紀錄。
-
-
-## Direct pack URLs
-When deployed to GitHub Pages, these routes skip the pack picker and open the selected pack directly:
-
-- `.../p3/`
-- `.../p4/`
-- `.../p5/`
-- `.../p6/`
-
-Fallback forms also work: `?pack=p4`, `?p=p4`, and `#p4`.
+## Product flow
+P3/P4/P5/P6 → Draw → Question → Draw again.
