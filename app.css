@@ -1,8 +1,8 @@
 :root{
-  --bg:#f6f8fb;--surface:#fff;--ink:#202124;--muted:#5f6368;--line:#dfe3e8;
+  --bg:#080b10;--surface:#111720;--ink:#f5f7fa;--muted:#aab2bd;--line:#303a47;
   --blue:#1a73e8;--g-blue:#4285f4;--g-red:#ea4335;--g-green:#34a853;
   --ease:cubic-bezier(.22,.72,.16,1);--press:cubic-bezier(.2,0,0,1);--shadow-soft:0 1px 2px rgba(60,64,67,.06),0 6px 20px rgba(60,64,67,.05);--shadow-float:0 16px 48px rgba(60,64,67,.14);
-  font-family:Roboto,"SF Pro Display","SF Pro Text","PingFang TC",Arial,sans-serif;color-scheme:light;
+  font-family:Roboto,"SF Pro Display","SF Pro Text","PingFang TC",Arial,sans-serif;color-scheme:dark;
 }
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none}body{background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;user-select:none}button{font:inherit;color:inherit;border:0}button:focus-visible{outline:3px solid rgba(66,133,244,.25);outline-offset:4px}.app{position:relative;width:100%;height:var(--app-height,100dvh);overflow:hidden;background:radial-gradient(circle at 50% 42%,#fff 0%,#f8fafd 48%,#f3f6fa 100%)}
 
@@ -58,3 +58,31 @@ body[data-state="ANIMATING"] .draw-stage::after,body[data-state="REVEALING"] .dr
 /* v12 Physics + WebGL stage. SVG stays as the crisp structural layer; WebGL owns high-velocity selectors and collision feedback. */
 body[data-state="ANIMATING"] .scene-gl{opacity:1}
 @media (prefers-reduced-motion:reduce){.scene-gl{will-change:auto}}
+
+
+/* v12.1 Outdoor Dark Pass — high-contrast shell for daylight event use. */
+body{background:#080b10;color:#f5f7fa}
+.app{background:radial-gradient(circle at 50% 42%,#17202b 0%,#0d1219 46%,#06080c 100%)}
+.pack-chip,.icon-btn{background:rgba(18,24,32,.92);border-color:rgba(78,91,108,.72);box-shadow:0 8px 24px rgba(0,0,0,.24);color:#eef3f8}
+.pack-chip{color:#eef3f8}.icon-btn{color:#c6ced8}.pack-chip:active,.icon-btn:active{background:#202934}
+.home:before{background:radial-gradient(ellipse,rgba(91,156,255,.10),rgba(8,11,16,0) 70%)}
+.draw-orb{background:#2f7df4;box-shadow:0 8px 28px rgba(47,125,244,.30),inset 0 1px 0 rgba(255,255,255,.15)}
+.draw-orb:active{background:#286ed8;box-shadow:0 3px 14px rgba(47,125,244,.28)}
+.pack-picker{background:radial-gradient(circle at 50% 42%,#151d27 0%,#090d13 72%,#06080c 100%)}
+.pack-option{background:#111720;border-color:#303a47;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.pack-option.is-selected{background:color-mix(in srgb,currentColor 13%,#10161e);border-color:color-mix(in srgb,currentColor 46%,#303a47)}
+.pack-option:active{background:#171f29}
+.reveal-bridge{background:#0e141c;box-shadow:0 14px 40px rgba(0,0,0,.42)}
+.question{background:#080b10}
+.question-pack{background:#121820}
+.question-id{color:#d9e0e8;background:#151c25;border:1px solid #303a47}
+.question-body{background:#080b10}
+.question-frame{background:#fff;border-radius:18px;box-shadow:0 18px 54px rgba(0,0,0,.36)}
+.next-btn{background:#2f7df4;box-shadow:0 8px 26px rgba(47,125,244,.28)}
+.next-btn:active{background:#286ed8}
+.toast{background:#1b232d;color:#f5f7fa;border:1px solid #374250}
+.draw-stage::before{background:
+  linear-gradient(90deg,rgba(182,195,210,.045) 1px,transparent 1px) 0 0/72px 72px,
+  linear-gradient(rgba(182,195,210,.035) 1px,transparent 1px) 0 0/72px 72px}
+.draw-stage::after{box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),inset 0 -90px 140px rgba(0,0,0,.22)}
+@media (hover:none) and (pointer:coarse){button:focus,button:focus-visible{outline:none!important}}

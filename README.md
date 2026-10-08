@@ -1,4 +1,4 @@
-# Lucky Draw v12 — Physics Engine + WebGL Renderer
+# Lucky Draw v12.1 — Outdoor Dark + Physics/WebGL
 
 A focused iPad classroom lucky-draw app. Q1, Q2 and Q3 remain visible throughout every selector animation, while the chosen result is produced by a visible mechanism rather than a late object swap.
 
@@ -63,3 +63,10 @@ The service-worker cache is versioned as `lucky-draw-v12-physics-webgl` and incl
 
 ## Source-image note
 The supplied question JPEGs remain unchanged to preserve exact classroom content. Some originals are below Retina-native resolution; true detail improvement requires higher-resolution source artwork rather than synthetic upscaling.
+
+
+## v12.1 Outdoor Dark Pass
+- The app shell, pack picker and all six selector stages use a high-contrast dark palette for daylight event use.
+- Question artwork is intentionally shown on an unchanged white content surface so the supplied classroom images are not visually altered.
+- The initial pack picker no longer programmatically focuses P3 on touch devices, removing the meaningless blue focus rectangle on iPad. Keyboard navigation still receives a focus target when the picker is opened from keyboard interaction.
+- Coarse-pointer devices suppress browser focus outlines while keyboard `:focus-visible` behavior remains available on keyboard-capable devices.
