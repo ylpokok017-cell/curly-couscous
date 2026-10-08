@@ -1,34 +1,65 @@
-# Lucky Draw v11 — Quality Pass
+# Lucky Draw v12 — Physics Engine + WebGL Renderer
 
-A focused iPad classroom lucky-draw app where Q1, Q2 and Q3 remain visible throughout every selector animation.
+A focused iPad classroom lucky-draw app. Q1, Q2 and Q3 remain visible throughout every selector animation, while the chosen result is produced by a visible mechanism rather than a late object swap.
 
 ## Client hard requirements — preserved
 - Any three consecutive question draws contain Q1, Q2 and Q3 exactly once.
 - The next animation cannot be any of the previous three animations.
 - Question order and animation order remain independent.
-- No candidate may be teleported, secretly replaced, or invisibly steered to the answer.
+- Direct `/p3`, `/p4`, `/p5`, `/p6` entry points remain available.
+- Multi-touch pinch / gesture blocking and iPad visual-viewport handling remain intact.
 
-## v11 motion / causality pass
-- **Lucky Wheel** — pointer ticks are tied to actual wheel rotation and settle physics.
-- **Plinko** — collision sound is emitted when the marble advances through peg/path collisions.
-- **Kinetic Arena** — each Q now has multiple plausible ricochet families so repeated results do not replay one memorisable path.
-- **Magnetic Rail** — the puck now lands at the chosen detent through the rail trajectory itself; the old late snap-to-target interpolation is removed.
-- **Timing Gate** — the timer, sensor and capture jaws now visually explain the moment of selection.
-- **Roulette Bowl** — the ball spirals continuously to the exact pocket radius/angle; the old final forced lerp into the pocket is removed.
+## v12 architecture
+The app is now split into two motion layers:
 
-## v11 sound system
-Sound is event-driven rather than percentage-timed. Wheel ticks, peg hits, impacts, metal contacts, gate closure, rolling and capture use different synthesized material cues. The sound preference persists locally.
+- **SVG structural layer** — crisp static geometry, labels, candidate targets, gates, rails and wheel typography.
+- **WebGL kinetic layer** — high-speed selector objects, velocity trails, collision rings, particles and magnetic-field feedback.
 
-## v11 reveal / pacing
-- Winning selector morphs into the Q badge while a white reveal wash introduces the question surface.
-- First draw keeps the full cinematic cadence; subsequent draws are condensed for classroom rapid-draw use.
-- `prefers-reduced-motion` remains supported.
+`v12-engine.js` contains the fixed-step physics controllers and a dependency-free WebGL 1 point-sprite renderer. No Three.js, PixiJS or external runtime is required.
 
-## iPad / PWA
-- Multi-touch pinch/gesture blocking retained.
-- Visual viewport handling retained for iPad browser chrome changes.
-- Direct `/p3`, `/p4`, `/p5`, `/p6` entry points retained.
-- Service-worker fallback now applies to navigation failures only instead of returning HTML for failed image/script requests.
+If WebGL is unavailable, the app automatically keeps the moving SVG selector visible and drives it from the same physics state, so the draw still works instead of failing to a blank canvas.
+
+## Physics models
+
+### Lucky Wheel
+The wheel now follows a viscous angular-damping model. Initial angular velocity is solved so the wheel naturally dissipates energy at the selected sector. Pointer recoil is a damped spring driven by actual tick crossings.
+
+### Plinko
+The old waypoint choreography is removed. Before the visible draw starts, v12 quickly searches for a valid launch position / horizontal velocity that physically reaches the pre-selected slot. The live animation then runs only fixed-step gravity, peg collisions, wall restitution and damping. Slot capture is a local spring after the ball has physically entered the correct slot.
+
+### Kinetic Arena
+The old hand-authored trajectory families are removed. v12 searches launch angles against the real bumper / wall simulation, chooses a launch state whose first goal contact is the selected Q, then runs the live puck with fixed-step collision physics only. There is no mid-flight steering.
+
+### Magnetic Rail
+The puck has velocity, wall restitution and drag. A visible late electromagnet ramps up at the selected detent and pulls the puck through spring + damping, including overshoot and settle rather than a final interpolation snap.
+
+### Timing Gate
+Candidate rotation uses angular damping. The trigger rotor is independent, and the gate jaw is a spring-damper system that closes only after the sensor trigger.
+
+### Roulette Bowl
+The ball uses a polar dynamics model: angular momentum decays while bowl-slope force and radial damping move the equilibrium radius inward. Multiple angular-velocity families vary the starting phase. The initial phase is solved so the naturally integrated orbit finishes at the selected pocket.
+
+## WebGL motion language
+- GPU-rendered selector discs use velocity-dependent after-images.
+- Collision energy drives short directional particles and registration rings.
+- Rail capture adds restrained magnetic field rings.
+- Dynamic selector rims shift to the winning Q color only near capture.
+- The existing sub-1% camera settle and shared-element question reveal are retained.
+- High-contrast flashing is intentionally avoided.
+- `prefers-reduced-motion` disables the added GPU trails / particles while preserving the result.
+
+## Sound
+Sound remains event-driven. Wheel ticks, peg contacts, impacts, metal wall hits, gate closure, rolling and capture are emitted from physics events rather than animation percentages. The sound preference persists locally.
+
+## Verification performed for v12
+- JavaScript syntax checks for `app.js` and `v12-engine.js`.
+- 18-draw rolling test: Q1/Q2/Q3 uniqueness passed for every rolling group of three; animation did not repeat within the previous three; all six scenes appeared; no runtime errors.
+- Plinko and Arena were stress-tested across many deterministic seeds and all tested initial-condition searches reached their requested target.
+- WebGL-enabled Chromium run confirmed a valid GPU context and successful rendering for all six scenes with no shader/runtime errors.
+- SVG fallback path was also exercised with WebGL unavailable.
+
+## PWA
+The service-worker cache is versioned as `lucky-draw-v12-physics-webgl` and includes `v12-engine.js`. Navigation-only fallback behavior from v11 is retained.
 
 ## Source-image note
-The supplied question JPEGs are kept unchanged to preserve exact classroom content. Some originals are below Retina-native resolution; true detail improvement requires higher-resolution source artwork rather than synthetic upscaling.
+The supplied question JPEGs remain unchanged to preserve exact classroom content. Some originals are below Retina-native resolution; true detail improvement requires higher-resolution source artwork rather than synthetic upscaling.

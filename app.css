@@ -15,7 +15,7 @@
 .home:before{content:"";position:absolute;width:min(58vw,560px);height:min(32vw,300px);border-radius:50%;background:radial-gradient(ellipse,rgba(32,33,36,.035),rgba(32,33,36,0) 70%);pointer-events:none}.draw-orb{position:relative;z-index:2;width:220px;height:64px;border-radius:32px;background:#1a73e8;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(26,115,232,.18);transition:transform .16s var(--press),box-shadow .18s ease,background .18s ease,opacity .18s ease}.draw-orb:before{content:none}.draw-orb__label{font-size:19px;font-weight:650;letter-spacing:-.01em}.draw-orb:active{transform:scale(.975);background:#1769d2;box-shadow:0 1px 4px rgba(26,115,232,.16)}.draw-orb:disabled{opacity:.38;cursor:default}
 
 /* Full-screen draw stage. The scene exists before the home fades, creating continuity. */
-.draw-stage{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:transparent;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility .28s ease}.scene{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;opacity:0;transform:scale(.985);transition:opacity .32s ease,transform .48s var(--ease)}.scene-svg{width:100%;height:100%;display:block;transform:translateZ(0)}
+.draw-stage{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:transparent;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility .28s ease}.scene{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;opacity:0;transform:scale(.985);transition:opacity .32s ease,transform .48s var(--ease)}.scene-svg{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block;transform:translateZ(0)}.scene-gl{position:absolute;inset:0;z-index:2;width:100%;height:100%;display:block;pointer-events:none;transform:translateZ(0);will-change:transform}
 body[data-state="FOCUSING"] .home{opacity:0;transform:scale(.985)}body[data-state="FOCUSING"] .top-actions,body[data-state="ANIMATING"] .top-actions,body[data-state="REVEALING"] .top-actions{opacity:0;transform:translateY(-8px);pointer-events:none}body[data-state="FOCUSING"] .draw-orb{transform:scale(1.04);opacity:0}body[data-state="FOCUSING"] .draw-stage,body[data-state="ANIMATING"] .draw-stage,body[data-state="REVEALING"] .draw-stage{opacity:1;visibility:visible}body[data-state="FOCUSING"] .scene,body[data-state="ANIMATING"] .scene,body[data-state="REVEALING"] .scene{opacity:1;transform:scale(1)}
 
 /* Pack choice: only the four decisions. */
@@ -31,3 +31,30 @@ body[data-state="FOCUSING"] .home{opacity:0;transform:scale(.985)}body[data-stat
 @media (orientation:portrait){.pack-grid{grid-template-columns:repeat(2,minmax(140px,1fr));width:min(720px,92vw)}.pack-option{height:clamp(190px,31vh,300px)}}
 @media (max-height:680px){.draw-orb{width:200px;height:58px}.pack-option{height:180px;border-radius:26px}.pack-option:after{bottom:18px}.question-body{bottom:max(78px,calc(env(safe-area-inset-bottom) + 68px))}.next-btn{height:52px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+
+/* v11.1 Motion Language Pass — depth + registration without high-contrast flashing. */
+.draw-stage::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;background:
+  linear-gradient(90deg,rgba(60,64,67,.035) 1px,transparent 1px) 0 0/72px 72px,
+  linear-gradient(rgba(60,64,67,.028) 1px,transparent 1px) 0 0/72px 72px;
+  mask-image:radial-gradient(circle at 50% 48%,#000 0 32%,transparent 74%);-webkit-mask-image:radial-gradient(circle at 50% 48%,#000 0 32%,transparent 74%);transition:opacity .32s ease}
+.draw-stage::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;box-shadow:inset 0 0 0 1px rgba(60,64,67,.03),inset 0 -90px 140px rgba(60,64,67,.025);transition:opacity .32s ease}
+body[data-state="ANIMATING"] .draw-stage::before,body[data-state="REVEALING"] .draw-stage::before{opacity:.46}
+body[data-state="ANIMATING"] .draw-stage::after,body[data-state="REVEALING"] .draw-stage::after{opacity:1}
+.scene{z-index:2}.scene-svg{will-change:transform;transform-origin:50% 50%}
+
+.reveal-bridge::before,.reveal-bridge::after{content:"";position:absolute;inset:-5px;border-radius:inherit;border:1.5px solid var(--bridge-color,#4285f4);opacity:0;pointer-events:none}
+.reveal-bridge.active::before{animation:registerA .34s cubic-bezier(.22,.72,.16,1) both}
+.reveal-bridge.active::after{animation:registerB .34s cubic-bezier(.22,.72,.16,1) .035s both}
+@keyframes registerA{0%{opacity:.36;transform:translate(-7px,4px) scale(1.04)}70%{opacity:.18}100%{opacity:0;transform:translate(0,0) scale(1)}}
+@keyframes registerB{0%{opacity:.30;transform:translate(6px,-3px) scale(.98)}70%{opacity:.14}100%{opacity:0;transform:translate(0,0) scale(1)}}
+
+.question-frame img{transform:translateY(10px) scale(.988)}
+.question.show .question-frame img{transform:translateY(0) scale(1)}
+.question.show .question-id{animation:badgeSettle .38s cubic-bezier(.22,.72,.16,1) both}
+@keyframes badgeSettle{0%{transform:translateY(-5px) scale(.96)}65%{transform:translateY(1px) scale(1.02)}100%{transform:none}}
+
+@media (prefers-reduced-motion:reduce){.draw-stage::before,.draw-stage::after{display:none}.reveal-bridge::before,.reveal-bridge::after{display:none}.question.show .question-id{animation:none}}
+
+/* v12 Physics + WebGL stage. SVG stays as the crisp structural layer; WebGL owns high-velocity selectors and collision feedback. */
+body[data-state="ANIMATING"] .scene-gl{opacity:1}
+@media (prefers-reduced-motion:reduce){.scene-gl{will-change:auto}}
